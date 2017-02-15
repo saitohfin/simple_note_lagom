@@ -13,6 +13,7 @@
         <module>stream-impl</module>
         <module>integration-tests</module>
         <module>cassandra-config</module>
+        <module>note-api</module>
     </modules>
 
     <build>
