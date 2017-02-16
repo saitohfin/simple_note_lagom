@@ -22,6 +22,10 @@ public class NoteEntity extends PersistentEntity<NoteCommand, NoteEvent, NoteSta
             return ctx.thenPersist(descriptionModified, evt ->{ctx.reply(Done.getInstance());});
         });
 
+        behaviour.setReadOnlyCommandHandler(getNoteCommand.class, (cmd, ctx) ->{
+            ctx.reply(state().note);
+        });
+
         behaviour.setEventHandler(NoteCreatedEvent.class, evt -> new NoteState(evt.note));
         behaviour.setEventHandler(TextModified.class, evt -> {
             Note currentNote = state().note;

@@ -1,6 +1,7 @@
 package com.javi.note.impl;
 
 import akka.Done;
+import akka.NotUsed;
 import com.google.inject.Inject;
 import com.javi.lagom.test.note.api.Note;
 import com.javi.lagom.test.note.api.NoteService;
@@ -16,6 +17,14 @@ public class NoteServiceImpl implements NoteService {
     public NoteServiceImpl(PersistentEntityRegistry persistentEntityRegistry){
         this.persistentEntityRegistry = persistentEntityRegistry;
         this.persistentEntityRegistry.register(NoteEntity.class);
+    }
+
+    @Override
+    public ServiceCall<NotUsed, Note> getNote(String title) {
+        return request -> {
+            PersistentEntityRef<NoteCommand> ref = persistentEntityRegistry.refFor(NoteEntity.class, title);
+            return ref.ask(new getNoteCommand(title));
+        };
     }
 
     @Override
