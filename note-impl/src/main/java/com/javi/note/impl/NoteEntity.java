@@ -17,7 +17,16 @@ public class NoteEntity extends PersistentEntity<NoteCommand, NoteEvent, NoteSta
             return ctx.thenPersist(noteCreated, evt ->{ ctx.reply(Done.getInstance());});
         });
 
+        behaviour.setCommandHandler(NoteModifyDescription.class, (cmd, ctx) ->{
+            NoteEvent descriptionModified = new TextModified(cmd.text);
+            return ctx.thenPersist(descriptionModified, evt ->{ctx.reply(Done.getInstance());});
+        });
+
         behaviour.setEventHandler(NoteCreatedEvent.class, evt -> new NoteState(evt.note));
+        behaviour.setEventHandler(TextModified.class, evt -> {
+            Note currentNote = state().note;
+            return new NoteState(new Note(currentNote.title, evt.text));
+        });
 
         return behaviour.build();
     }

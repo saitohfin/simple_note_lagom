@@ -25,4 +25,12 @@ public class NoteServiceImpl implements NoteService {
             return ref.ask(new NoteCreator(request));
         };
     }
+
+    @Override
+    public ServiceCall<Note, Done> modifyDescription(String title) {
+        return request ->{
+          PersistentEntityRef<NoteCommand> ref = persistentEntityRegistry.refFor(NoteEntity.class, title);
+          return ref.ask(new NoteModifyDescription(request.text));
+        };
+    }
 }
